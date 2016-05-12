@@ -20,23 +20,26 @@ def confirm_float(str)
 	end
 end
 
-def confirm_operator(str)
-	unless str.is_operator? str 
-		puts "\n*******INCORRECT INPUT TYPE********", "\n"
-		main
-	end
-end
+#NOT USING ANYMORE
+# def confirm_operator(str)
+# 	unless str.is_operator? str 
+# 		puts "\n*******INCORRECT INPUT TYPE********", "\n"
+# 		main
+# 	end
+# end
 
-def divide_by_zero?(operator, num2)
-	if operator == "/" && num2 == 0
-		puts "\n********NO DIVIDING BY 0********", "\n"
-		main
-	end
-end
+#NOT USING ANYMORE
+# def divide_by_zero?(operator, num2)
+# 	if operator == "/" && num2 == 0
+# 		puts "\n********NO DIVIDING BY 0********", "\n"
+# 		main
+# 	end
+# end
 
 def get_input
 	user_input = gets.strip.downcase
 	if user_input == 'clear' 
+		@memory = nil
 		main
 	elsif user_input == 'quit'
 		exit
@@ -44,18 +47,26 @@ def get_input
 		trig_menu
 	elsif user_input == 'history'
 		show_history
+	elsif user_input == 'show memory'
+		if @memory == nil
+			puts "\nMemory is empty", "\n"
+		else
+			puts "\n", @memory, "\n"
+		end
+		main
 	else
 		return user_input
 	end
 end
 
-def to_array(phrase)
-	phrase.gsub(/[(]/, "|(").gsub(/[)]/, ")|").split("|").reject{ |i| i.empty? }
-end
+#NOT USING ANYMORE
+# def to_array(phrase)
+# 	phrase.gsub(/[(]/, "|(").gsub(/[)]/, ")|").split("|").reject{ |i| i.empty? }
+# end
 
 def get_trig_input
 	puts "Enter the number you would like to calcuate this for"
-	user_input = get_input
+	user_input = get_input.gsub(/m/, "#{@memory}")
 	confirm_float user_input
 	user_input.to_f
 end
@@ -96,11 +107,14 @@ end
 def main
 	while true
 		puts "Type 'quit' at anytime to quit"
-		puts "Type 'clear' at anytime to start over"
+		puts "Type 'clear' at anytime to clear the memory"
+		puts "Type 'show memory' to view what is currently in memory"
 		puts "Type 'trig' if you want to do some trig"
+		puts "Type 'history' if you want to view a history of your calculations"
 		puts "\nEnter what you would like calculated, with spaces or without"
+		puts "If you would like to use the value in memory, type an 'm' in place of that value below"
 		print ">"
-		phrase = get_input.gsub(/m/, "@memory")
+		phrase = get_input.gsub(/m/, "#{@memory}")
 		begin
 			answer = eval(phrase)
 		rescue Exception
@@ -108,7 +122,7 @@ def main
 			puts "MAYBE A TYPO OR MAYBE YOU DIVIDED BY 0!!"
 			main
 		end
-		@history[phrase] = answer
+		@history["#{phrase}"] = answer
 		puts answer
 		puts "Would you like to store this answer in memory? (y/n)"
 		memory_input = gets.strip.downcase
